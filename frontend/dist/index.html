@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>John Tyler Swarm | Systems Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+
+    header {
+      padding: 60px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #1e293b, #020617);
+      border-bottom: 1px solid #334155;
+    }
+
+    h1 { margin: 0; font-size: 3rem; letter-spacing: 1px; }
+    h2 { margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 5px; font-weight: 500; }
+    p { line-height: 1.6; }
+
+    .container { max-width: 1100px; margin: auto; padding: 20px; }
+    .grid { display: grid; gap: 20px; }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      border: 1px solid #334155;
+    }
+    .card:hover { transform: translateY(-4px); background: #273549; }
+
+    .tech { color: #38bdf8; font-size: 0.9rem; margin-top: 10px; }
+    .section { margin-top: 50px; }
+
+    button {
+      background: #38bdf8;
+      border: none;
+      padding: 10px 16px;
+      margin: 5px 5px 10px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover { background: #0ea5e9; }
+
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #334155;
+    }
+
+    .status-item { font-size: 1rem; margin: 8px 0; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; background: #0ea5e9; font-size: 0.8rem; margin-left: 8px; }
+
+    footer { text-align: center; padding: 30px; margin-top: 60px; border-top: 1px solid #334155; color: #94a3b8; }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>John Tyler Swarm</h1>
+  <p>Systems Engineer • Infrastructure • Networking</p>
+</header>
+
+<div class="container">
+
+  <!-- ABOUT -->
+  <div class="section">
+    <h2>About</h2>
+    <div class="card">
+      <p>
+        Backend-focused IT professional with strong experience in Linux, networking,
+        and infrastructure. I design and operate a full homelab environment with
+        monitoring, containerization, and public-facing services.
+      </p>
+    </div>
+  </div>
+
+  <!-- LIVE STATUS -->
+  <div class="section">
+    <h2>Live System Status</h2>
+    <div class="grid grid-3" id="status">
+      <div class="card status-item">Loading...</div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="section">
+    <h2>Projects</h2>
+    <div class="grid grid-3" id="projects"></div>
+  </div>
+
+  <!-- API TESTER -->
+  <div class="section">
+    <h2>API Playground</h2>
+    <button onclick="callAPI('/projects')">GET /projects</button>
+    <button onclick="callAPI('/health')">GET /health</button>
+    <pre id="api-output">Click a button to test the API...</pre>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <div class="section">
+    <h2>Architecture</h2>
+    <div class="card">
+      <p><strong>Flow:</strong></p>
+      <p>
+        🌐 Cloudflare Tunnel → 🔁 Nginx Proxy Manager → 🐳 Docker Services
+      </p>
+      <p>
+        • FastAPI Backend<br>
+        • Nginx Frontend<br>
+        • Prometheus + Grafana + Loki Monitoring Stack
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  © 2026 John Tyler Swarm • Built on my homelab
+</footer>
+
+<script>
+  // PROJECTS
+  fetch('/projects')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('projects');
+      data.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<h3>${p.name}</h3><p>${p.description}</p><div class="tech">${p.tech.join(' • ')}</div>`;
+        container.appendChild(div);
+      });
+    });
+
+  // SYSTEM STATUS
+  function updateStatus() {
+    fetch('/health')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('status').innerHTML = `
+          <div class="card status-item">🟢 System <span class="badge">Online</span></div>
+          <div class="card status-item">🐳 Containers <span class="badge">${data.containers_running}</span></div>
+          <div class="card status-item">📡 API <span class="badge">Healthy</span></div>
+          <div class="card status-item">⏱ Uptime <span class="badge">${data.uptime_seconds}s</span></div>
+        `;
+      })
+      .catch(() => {
+        document.getElementById('status').innerHTML = `<div class="card status-item">❌ Status Unavailable</div>`;
+      });
+  }
+
+  updateStatus();
+  setInterval(updateStatus, 5000); // refresh every 5 seconds
+
+  // API TESTER
+  function callAPI(endpoint) {
+    fetch(endpoint)
+      .then(res => res.json())
+      .then(data => { document.getElementById('api-output').textContent = JSON.stringify(data, null, 2); })
+      .catch(err => { document.getElementById('api-output').textContent = "Error: " + err; });
+  }
+</script>
+
+</body>
+</html>
