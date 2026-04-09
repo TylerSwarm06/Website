@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>John Tyler Swarm</title>
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: rgba(17, 26, 43, 0.84);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --text: #e5ecf5;
+      --muted: #9fb0c7;
+      --blue: #60a5fa;
+      --shadow: 0 18px 40px rgba(0,0,0,0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.16), transparent 35%),
+        radial-gradient(circle at top right, rgba(110,231,183,0.12), transparent 30%),
+        linear-gradient(180deg, #08101c 0%, #0b1220 100%);
+      color: var(--text);
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    .site-header {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(14px);
+      background: rgba(8,16,28,0.72);
+      border-bottom: 1px solid rgba(96,165,250,0.28);
+    }
+
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 72px;
+    }
+
+    .brand {
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .nav a {
+      color: #d7e3f4;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.7rem 1.15rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .nav a:hover {
+      color: white;
+      border-color: rgba(96,165,250,0.28);
+      background: rgba(96,165,250,0.08);
+    }
+
+    /* active only used on other pages */
+    .nav a.active {
+      color: #7dd3fc;
+      border-color: rgba(37,99,235,0.45);
+      background: rgba(0,88,255,0.12);
+    }
+
+    main {
+      padding: 3rem 0;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 2.5rem;
+    }
+
+    p {
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 1rem 0;
+      color: var(--muted);
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner container">
+    <a class="brand" href="/">John Tyler Swarm</a>
+
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/resume.html">Resume</a>
+      <a href="/blog.html">Blog</a>
+      <!-- ✅ FIXED -->
+      <a href="/projects.html">Projects</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="card">
+      <h1>Welcome</h1>
+      <p>
+        This is my portfolio showcasing infrastructure, backend development,
+        monitoring systems, and self-hosted environments.
+      </p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    © 2026 John Tyler Swarm
+  </div>
+</footer>
+
+</body>
+</html>

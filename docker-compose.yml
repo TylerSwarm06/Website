@@ -1,30 +1,20 @@
-# portfolio/docker-compose.yml
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
     container_name: portfolio-backend
-    restart: unless-stopped
-    networks:
-      - portfolio-network
-    environment:
-      # Host Prometheus for metrics
-      - PROMETHEUS_HOST=host.docker.internal
-      - PROMETHEUS_PORT=9090
     ports:
-      # Optional: expose backend if needed externally
       - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
     container_name: portfolio-frontend
-    restart: unless-stopped
-    networks:
-      - portfolio-network
     ports:
       - "80:80"
     depends_on:
       - backend
-
-networks:
-  portfolio-network:
-    driver: bridge
+    restart: unless-stopped

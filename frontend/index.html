@@ -1,73 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>John Tyler Swarm | Systems Engineer</title>
-<style>
-  body { margin:0; font-family:"Segoe UI", system-ui, sans-serif; background:#0f172a; color:#e2e8f0; }
-  header { padding:60px 20px; text-align:center; background:linear-gradient(135deg,#1e293b,#020617); border-bottom:1px solid #334155; }
-  h1{margin:0;font-size:3rem;letter-spacing:1px;}
-  h2{margin-bottom:10px;border-bottom:1px solid #334155;padding-bottom:5px;font-weight:500;}
-  p{line-height:1.6;}
-  .container{max-width:1100px;margin:auto;padding:20px;}
-  .grid{display:grid;gap:20px;}
-  .grid-3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));}
-  .card{background:#1e293b;padding:20px;border-radius:12px;transition:all 0.2s ease;border:1px solid #334155;}
-  .card:hover{transform:translateY(-4px);background:#273549;}
-  .tech{color:#38bdf8;font-size:.9rem;margin-top:10px;}
-  .section{margin-top:50px;}
-  button{background:#38bdf8;border:none;padding:10px 16px;margin:5px 5px 10px 0;border-radius:6px;cursor:pointer;font-weight:500;}
-  button:hover{background:#0ea5e9;}
-  pre{background:#020617;padding:15px;border-radius:8px;overflow-x:auto;border:1px solid #334155;}
-  .status-item{font-size:1rem;margin:8px 0;}
-  .badge{display:inline-block;padding:3px 8px;border-radius:6px;background:#0ea5e9;font-size:.8rem;margin-left:8px;}
-  footer{text-align:center;padding:30px;margin-top:60px;border-top:1px solid #334155;color:#94a3b8;}
-</style>
+  <meta charset="UTF-8">
+  <title>John Tyler Swarm | Systems Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header.topbar {
+      padding: 20px 20px 10px;
+      border-bottom: 1px solid #334155;
+      background: #0f172a;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .site-name {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #e2e8f0;
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      font-size: 0.95rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    nav a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.2s ease, background 0.2s ease;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    nav a:hover {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    nav a.active {
+      color: #38bdf8;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.10);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+    }
+
+    header.hero {
+      padding: 60px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #1e293b, #020617);
+      border-bottom: 1px solid #334155;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 3rem;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 8px;
+      font-weight: 500;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      background: #273549;
+    }
+
+    .metric-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 68px;
+    }
+
+    .metric-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+
+    .metric-value {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      color: #020617;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .metric-value.neutral {
+      background: #0ea5e9;
+    }
+
+    .metric-value.healthy {
+      background: #22c55e;
+    }
+
+    .metric-value.degraded {
+      background: #facc15;
+    }
+
+    .metric-value.down {
+      background: #ef4444;
+    }
+
+    .section {
+      margin-top: 50px;
+    }
+
+    .substatus-grid {
+      margin-top: 20px;
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    button {
+      background: #38bdf8;
+      border: none;
+      padding: 10px 16px;
+      margin: 5px 5px 10px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #334155;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .tech {
+      color: #38bdf8;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .muted {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .service-summary {
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+
+    .service-summary span {
+      margin-right: 14px;
+      white-space: nowrap;
+    }
+
+    .services-root {
+      display: grid;
+      gap: 28px;
+    }
+
+    .service-group {
+      display: grid;
+      gap: 14px;
+    }
+
+    .service-group-title {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .service-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
+
+    .service-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .service-card:hover {
+      transform: translateY(-3px);
+      background: #273549;
+    }
+
+    .service-card.status-healthy {
+      border-color: rgba(34, 197, 94, 0.45);
+    }
+
+    .service-card.status-degraded {
+      border-color: rgba(250, 204, 21, 0.45);
+    }
+
+    .service-card.status-down {
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .service-card.expanded {
+      background: #273549;
+    }
+
+    .service-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 24px;
+    }
+
+    .service-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+
+    .status-dot.healthy {
+      background: #22c55e;
+    }
+
+    .status-dot.degraded {
+      background: #facc15;
+    }
+
+    .status-dot.down {
+      background: #ef4444;
+    }
+
+    .service-expand-indicator {
+      color: #94a3b8;
+      font-size: 0.8rem;
+      flex: 0 0 auto;
+    }
+
+    .service-role {
+      margin-top: 10px;
+      color: #94a3b8;
+      font-size: 0.88rem;
+      text-transform: capitalize;
+    }
+
+    .service-url {
+      margin-top: 8px;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      word-break: break-word;
+    }
+
+    .service-url a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    .service-url a:hover {
+      text-decoration: underline;
+    }
+
+    .service-state {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      text-transform: capitalize;
+    }
+
+    .service-details {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #334155;
+      display: none;
+      gap: 10px;
+    }
+
+    .service-card.expanded .service-details {
+      display: grid;
+    }
+
+    .service-detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.88rem;
+    }
+
+    .service-detail-label {
+      color: #94a3b8;
+    }
+
+    .service-detail-value {
+      text-align: right;
+      color: #e2e8f0;
+      word-break: break-word;
+    }
+
+    .service-depends,
+    .service-connects {
+      margin-top: 4px;
+      font-size: 0.84rem;
+      color: #94a3b8;
+    }
+
+    .flow-root {
+      display: grid;
+      gap: 16px;
+    }
+
+    .flow-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .flow-node {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      font-size: 0.9rem;
+    }
+
+    .flow-node.status-healthy {
+      border-color: rgba(34, 197, 94, 0.45);
+    }
+
+    .flow-node.status-degraded {
+      border-color: rgba(250, 204, 21, 0.45);
+    }
+
+    .flow-node.status-down {
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .flow-arrow {
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      margin-top: 60px;
+      border-top: 1px solid #334155;
+      color: #94a3b8;
+    }
+  </style>
 </head>
 <body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="site-name"></div>
+    <nav>
+      <a href="/" class="active">Home</a>
+      <a href="/resume.html">Resume</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/#projects">Projects</a>
+    </nav>
+  </div>
+</header>
 
-<header>
+<header class="hero">
   <h1>John Tyler Swarm</h1>
   <p>Systems Engineer • Infrastructure • Networking</p>
 </header>
 
 <div class="container">
-
-  <!-- Health Status Section -->
   <div class="section">
-    <h2>Live System Status</h2>
-    <div class="grid grid-3" id="status">
-      <div class="card status-item">Loading...</div>
+    <h2>About</h2>
+    <div class="card">
+      <p>
+        Backend-focused IT professional with strong experience in Linux, networking,
+        and infrastructure. I design and operate a full homelab environment with
+        monitoring, containerization, and public-facing services.
+      </p>
     </div>
   </div>
 
-  <!-- Projects Section -->
   <div class="section">
-    <h2>Projects</h2>
-    <div class="grid grid-3" id="projects">
+    <h2>Live System Status</h2>
+    <div class="grid grid-4" id="status-main">
+      <div class="card">Loading...</div>
+    </div>
+
+    <div class="substatus-grid" id="status-secondary">
       <div class="card">Loading...</div>
     </div>
   </div>
 
-  <!-- API Playground -->
+  <div class="section">
+    <h2>System Flow</h2>
+    <div id="topology">
+      <div class="card">Loading system flow...</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Services</h2>
+    <div id="services">
+      <div class="card">Loading services...</div>
+    </div>
+  </div>
+
+  <div class="section" id="projects">
+    <h2>Projects</h2>
+    <div class="grid grid-3" id="projects-grid">
+      <div class="card">Loading projects...</div>
+    </div>
+  </div>
+
   <div class="section">
     <h2>API Playground</h2>
-    <button onclick="callAPI('/projects')">GET /projects</button>
-    <button onclick="callAPI('/health')">GET /health</button>
+    <button onclick="callAPI('health')">GET https://api.tylerswarm.com/api/health</button>
+    <button onclick="callAPI('projects')">GET https://api.tylerswarm.com/api/projects</button>
+    <button onclick="callAPI('services')">GET https://api.tylerswarm.com/api/services</button>
     <pre id="api-output">Click a button to test the API...</pre>
   </div>
 
-  <!-- Architecture Info -->
   <div class="section">
     <h2>Architecture</h2>
     <div class="card">
       <p><strong>Flow:</strong></p>
-      <p>🌐 Cloudflare Tunnel → 🔁 Nginx Proxy Manager → 🐳 Docker Services</p>
-      <p>• FastAPI Backend<br>• Nginx Frontend<br>• Prometheus + Grafana + Loki Monitoring Stack</p>
+      <p>Cloudflare Tunnel → Nginx Proxy Manager → Docker Services</p>
+      <p>
+        • FastAPI Backend<br>
+        • Nginx Frontend<br>
+        • Prometheus + Grafana + Loki Monitoring Stack
+      </p>
     </div>
   </div>
-
 </div>
 
 <footer>
@@ -75,57 +526,331 @@
 </footer>
 
 <script>
-async function updateStatus() {
-  try {
-    const res = await fetch('/health');
-    const data = await res.json();
+  const API_BASE = "https://api.tylerswarm.com/api";
+  let expandedServiceName = null;
 
-    const containers = data.containers_running ?? 'N/A';
-    const uptime = data.uptime ?? 'N/A';
-    const promTargets = data.prometheus_targets?.data?.activeTargets?.length ?? 'N/A';
-
-    document.getElementById('status').innerHTML = `
-      <div class="card status-item">🟢 System <span class="badge">Online</span></div>
-      <div class="card status-item">🐳 Containers <span class="badge">${containers}</span></div>
-      <div class="card status-item">📡 API <span class="badge">Healthy</span></div>
-      <div class="card status-item">⏱ Uptime <span class="badge">${uptime}</span></div>
-      <div class="card status-item">📊 Prometheus Targets <span class="badge">${promTargets}</span></div>
-    `;
-  } catch (err) {
-    document.getElementById('status').innerHTML = `<div class="card status-item">❌ Status Unavailable</div>`;
-    console.error(err);
-  }
-}
-
-async function loadProjects() {
-  try {
-    const res = await fetch('/projects');
-    const projects = await res.json();
-    const container = document.getElementById('projects');
-    container.innerHTML = '';
-    projects.forEach(p => {
-      const div = document.createElement('div');
-      div.className = 'card';
-      div.innerHTML = `<h3>${p.name}</h3><p>${p.description}</p><div class="tech">${p.tech.join(' • ')}</div>`;
-      container.appendChild(div);
+  async function fetchJSON(url) {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
     });
-  } catch(err) {
-    console.error(err);
+
+    const contentType = response.headers.get("content-type") || "";
+    const text = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+
+    if (!contentType.includes("application/json")) {
+      throw new Error(`Expected JSON but got: ${contentType || "unknown"}; body: ${text.slice(0, 200)}`);
+    }
+
+    return JSON.parse(text);
   }
-}
 
-function callAPI(endpoint) {
-  fetch(endpoint)
-    .then(res => res.json())
-    .then(data => { document.getElementById('api-output').textContent = JSON.stringify(data, null, 2); })
-    .catch(err => { document.getElementById('api-output').textContent = "Error: "+err; });
-}
+  function formatTimestamp(unixTs) {
+    if (!unixTs) return "Unknown";
+    const date = new Date(unixTs * 1000);
+    return date.toLocaleTimeString();
+  }
 
-// Auto-refresh every 5s
-updateStatus();
-loadProjects();
-setInterval(updateStatus, 5000);
+  async function measureLatency(url) {
+    const start = performance.now();
+    await fetchJSON(url);
+    const end = performance.now();
+    return Math.round(end - start);
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function humanGroup(group) {
+    if (group === "edge") return "Edge / Access";
+    if (group === "application") return "Application";
+    if (group === "observability") return "Observability";
+    return group;
+  }
+
+  function dependencyText(service, servicesByKey) {
+    const depends = Array.isArray(service.depends_on) ? service.depends_on : [];
+    if (!depends.length) return "Depends on: none";
+
+    const labels = depends.map((key) => servicesByKey[key]?.label || key);
+    return `Depends on: ${labels.join(", ")}`;
+  }
+
+  function connectsText(service, servicesByKey) {
+    const links = Array.isArray(service.connects_to) ? service.connects_to : [];
+    if (!links.length) return "Connects to: none";
+
+    const labels = links.map((key) => servicesByKey[key]?.label || key);
+    return `Connects to: ${labels.join(", ")}`;
+  }
+
+  async function loadProjects() {
+    const container = document.getElementById("projects-grid");
+
+    try {
+      const data = await fetchJSON(`${API_BASE}/projects`);
+      container.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        container.innerHTML = `<div class="card">No projects found</div>`;
+        return;
+      }
+
+      data.forEach((p) => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <h3>${escapeHtml(p.name ?? "Unnamed Project")}</h3>
+          <p>${escapeHtml(p.description ?? "No description provided.")}</p>
+          <div class="tech">${Array.isArray(p.tech) ? p.tech.map(escapeHtml).join(" • ") : ""}</div>
+        `;
+        container.appendChild(div);
+      });
+    } catch (err) {
+      container.innerHTML = `<div class="card">Failed to load projects<br><br>${escapeHtml(String(err))}</div>`;
+    }
+  }
+
+  function renderServiceGroup(title, services, servicesByKey) {
+    if (!services || services.length === 0) return "";
+
+    return `
+      <div class="service-group">
+        <div class="service-group-title">${escapeHtml(title)}</div>
+        <div class="service-grid">
+          ${services.map((service) => {
+            const expanded = expandedServiceName === service.name;
+            return `
+              <div class="service-card status-${escapeHtml(service.status)} ${expanded ? "expanded" : ""}" onclick="toggleService('${escapeHtml(service.name)}')">
+                <div class="service-header">
+                  <div class="service-title">
+                    <div class="status-dot ${escapeHtml(service.status)}"></div>
+                    <h3>${escapeHtml(service.label)}</h3>
+                  </div>
+                  <div class="service-expand-indicator">${expanded ? "Hide" : "Details"}</div>
+                </div>
+
+                <div class="service-role">${escapeHtml(humanGroup(service.group))}</div>
+
+                ${service.url ? `<div class="service-url"><a href="${escapeHtml(service.url)}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">${escapeHtml(service.url)}</a></div>` : ""}
+
+                <div class="service-state">${escapeHtml(service.status)}</div>
+
+                <div class="service-details">
+                  <div class="service-detail-row">
+                    <div class="service-detail-label">Container</div>
+                    <div class="service-detail-value">${escapeHtml(service.name)}</div>
+                  </div>
+                  <div class="service-detail-row">
+                    <div class="service-detail-label">Group</div>
+                    <div class="service-detail-value">${escapeHtml(humanGroup(service.group))}</div>
+                  </div>
+                  <div class="service-detail-row">
+                    <div class="service-detail-label">Docker State</div>
+                    <div class="service-detail-value">${escapeHtml(service.docker_state ?? "Unknown")}</div>
+                  </div>
+                  <div class="service-detail-row">
+                    <div class="service-detail-label">Status</div>
+                    <div class="service-detail-value">${escapeHtml(service.status)}</div>
+                  </div>
+                  <div class="service-detail-row">
+                    <div class="service-detail-label">Public URL</div>
+                    <div class="service-detail-value">${service.url ? `<a href="${escapeHtml(service.url)}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">${escapeHtml(service.url)}</a>` : "Internal only"}</div>
+                  </div>
+                  <div class="service-depends">${escapeHtml(dependencyText(service, servicesByKey))}</div>
+                  <div class="service-connects">${escapeHtml(connectsText(service, servicesByKey))}</div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderFlowNode(service) {
+    return `
+      <div class="flow-node status-${escapeHtml(service.status)}">
+        <div class="status-dot ${escapeHtml(service.status)}"></div>
+        <span>${escapeHtml(service.label)}</span>
+      </div>
+    `;
+  }
+
+  function renderTopology(services) {
+    const topology = document.getElementById("topology");
+    const byKey = Object.fromEntries(services.map((s) => [s.key, s]));
+
+    const primaryPath = [
+      byKey["cloudflare-tunnel"],
+      byKey["nginx-proxy-manager"],
+      byKey["portfolio-frontend"],
+      byKey["portfolio-api"]
+    ].filter(Boolean);
+
+    const observabilityPath = [
+      byKey["portfolio-api"],
+      byKey["prometheus"],
+      byKey["grafana"]
+    ].filter(Boolean);
+
+    const loggingPath = [
+      byKey["portfolio-api"],
+      byKey["loki"],
+      byKey["grafana"]
+    ].filter(Boolean);
+
+    function row(nodes) {
+      if (!nodes.length) return "";
+      return `
+        <div class="flow-row">
+          ${nodes.map((node, idx) => `
+            ${idx > 0 ? `<div class="flow-arrow">→</div>` : ""}
+            ${renderFlowNode(node)}
+          `).join("")}
+        </div>
+      `;
+    }
+
+    topology.innerHTML = `
+      <div class="card">
+        <div class="flow-root">
+          ${row(primaryPath)}
+          ${row(observabilityPath)}
+          ${row(loggingPath)}
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadServices() {
+    const container = document.getElementById("services");
+
+    try {
+      const data = await fetchJSON(`${API_BASE}/services`);
+
+      if (!data.services || data.services.length === 0) {
+        container.innerHTML = `<div class="card">No services found</div>`;
+        document.getElementById("topology").innerHTML = `<div class="card">No system flow data found</div>`;
+        return;
+      }
+
+      const servicesByKey = Object.fromEntries(data.services.map((s) => [s.key, s]));
+
+      const edge = data.services.filter((s) => s.group === "edge");
+      const application = data.services.filter((s) => s.group === "application");
+      const observability = data.services.filter((s) => s.group === "observability");
+
+      container.innerHTML = `
+        <div class="services-root">
+          ${renderServiceGroup("Edge / Access", edge, servicesByKey)}
+          ${renderServiceGroup("Application", application, servicesByKey)}
+          ${renderServiceGroup("Observability", observability, servicesByKey)}
+        </div>
+      `;
+
+      renderTopology(data.services);
+    } catch (err) {
+      container.innerHTML = `<div class="card">Failed to load services<br><br>${escapeHtml(String(err))}</div>`;
+      document.getElementById("topology").innerHTML = `<div class="card">Failed to load system flow<br><br>${escapeHtml(String(err))}</div>`;
+    }
+  }
+
+  function toggleService(serviceName) {
+    expandedServiceName = expandedServiceName === serviceName ? null : serviceName;
+    loadServices();
+  }
+
+  async function updateStatus() {
+    const main = document.getElementById("status-main");
+    const secondary = document.getElementById("status-secondary");
+
+    try {
+      const [health, latencyMs] = await Promise.all([
+        fetchJSON(`${API_BASE}/health`),
+        measureLatency(`${API_BASE}/health`)
+      ]);
+
+      const containerValue = health.docker_available
+        ? (health.containers_running ?? 0)
+        : "Unavailable";
+
+      const healthy = health.service_health?.healthy ?? "—";
+      const degraded = health.service_health?.degraded ?? "—";
+      const down = health.service_health?.down ?? "—";
+
+      main.innerHTML = `
+        <div class="card metric-card">
+          <div class="metric-label">API Reachable</div>
+          <div class="metric-value neutral">${health.api_reachable ? "Yes" : "No"}</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">Containers</div>
+          <div class="metric-value neutral">${escapeHtml(containerValue)}</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">API Uptime</div>
+          <div class="metric-value neutral">${escapeHtml(health.api_uptime ?? "Unknown")}</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">Host Uptime</div>
+          <div class="metric-value neutral">${escapeHtml(health.host_uptime ?? "Unknown")}</div>
+        </div>
+      `;
+
+      secondary.innerHTML = `
+        <div class="card">
+          <div class="metric-label">Last Updated</div>
+          <div class="muted" style="margin-top: 12px;">${escapeHtml(formatTimestamp(health.timestamp))}</div>
+        </div>
+        <div class="card">
+          <div class="metric-label">API Latency</div>
+          <div class="muted" style="margin-top: 12px;">${escapeHtml(latencyMs)} ms</div>
+        </div>
+        <div class="card">
+          <div class="metric-label">Service Health</div>
+          <div class="service-summary" style="margin-top: 12px;">
+            <span><span class="metric-value healthy">${escapeHtml(healthy)}</span> Healthy</span>
+            <span><span class="metric-value degraded">${escapeHtml(degraded)}</span> Degraded</span>
+            <span><span class="metric-value down">${escapeHtml(down)}</span> Down</span>
+          </div>
+        </div>
+      `;
+    } catch (err) {
+      main.innerHTML = `<div class="card">Status Unavailable<br><br>${escapeHtml(String(err))}</div>`;
+      secondary.innerHTML = "";
+    }
+  }
+
+  async function callAPI(endpoint) {
+    const output = document.getElementById("api-output");
+    output.textContent = "Loading...";
+
+    try {
+      const data = await fetchJSON(`${API_BASE}/${endpoint}`);
+      output.textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      output.textContent = `Error: ${String(err)}`;
+    }
+  }
+
+  loadProjects();
+  loadServices();
+  updateStatus();
+  setInterval(updateStatus, 5000);
+  setInterval(loadServices, 15000);
 </script>
-
 </body>
 </html>

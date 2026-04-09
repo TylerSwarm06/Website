@@ -1,17 +1,18 @@
+# Use slim Python 3.12
 FROM python:3.12-slim
 
+# Set working directory
 WORKDIR /app
 
-# Install docker CLI for container stats
-RUN apt-get update && apt-get install -y docker.io && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements FIRST (for caching)
-COPY requirements.txt .
-
 # Install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
+# Copy backend source code
 COPY . .
 
+# Expose FastAPI port
+EXPOSE 9000
+
+# Run FastAPI with Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9000"]

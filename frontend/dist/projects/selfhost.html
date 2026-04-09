@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Self-Hosted Infrastructure | John Tyler Swarm</title>
+  <meta
+    name="description"
+    content="Self-hosted infrastructure project by John Tyler Swarm covering Docker, reverse proxy routing, backend visibility, and monitoring."
+  />
+  <style>
+    :root {
+      --bg: #0b1220;
+      --bg-alt: #10192b;
+      --panel: rgba(17, 26, 43, 0.84);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --text: #e5ecf5;
+      --muted: #9fb0c7;
+      --accent: #6ee7b7;
+      --accent-2: #60a5fa;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --max-width: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.16), transparent 35%),
+        radial-gradient(circle at top right, rgba(110, 231, 183, 0.12), transparent 30%),
+        linear-gradient(180deg, #08101c 0%, #0b1220 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.68;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(var(--max-width), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(8, 16, 28, 0.72);
+      border-bottom: 1px solid rgba(96, 165, 250, 0.28);
+    }
+
+    .header-inner {
+      width: min(var(--max-width), calc(100% - 2rem));
+      margin: 0 auto;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      color: #d7e3f4;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.7rem 1.15rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .nav a:hover,
+    .nav a:focus-visible {
+      color: #ffffff;
+      border-color: rgba(96, 165, 250, 0.28);
+      background: rgba(96, 165, 250, 0.08);
+      outline: none;
+    }
+
+    .nav a.active {
+      color: #7dd3fc;
+      border-color: rgba(37, 99, 235, 0.45);
+      background: rgba(0, 88, 255, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.08);
+    }
+
+    main {
+      padding: 3.25rem 0 5rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-card,
+    .section-card,
+    .focus-card,
+    .visual-card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card,
+    .section-card,
+    .visual-card {
+      padding: 1.6rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(2.3rem, 5vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+    }
+
+    h2 {
+      margin: 0 0 0.9rem;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      margin: 0 0 0.6rem;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+    }
+
+    .hero-side {
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .stat {
+      padding: 0.9rem 1rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat strong {
+      display: block;
+      margin-bottom: 0.2rem;
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .focus-card {
+      padding: 1.2rem;
+    }
+
+    .focus-card p {
+      margin: 0;
+      font-size: 0.96rem;
+    }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.1rem;
+      margin-top: 1rem;
+    }
+
+    .visual-card {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+      border-style: dashed;
+    }
+
+    .visual-card strong {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-size: 1rem;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .flow-step {
+      padding: 1rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      min-height: 100%;
+    }
+
+    .flow-step strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+      font-size: 0.96rem;
+    }
+
+    .flow-step span {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.1rem;
+    }
+
+    li + li {
+      margin-top: 0.45rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent-2);
+      font-weight: 700;
+    }
+
+    .back-link:hover,
+    .back-link:focus-visible {
+      gap: 0.72rem;
+      outline: none;
+      color: #93c5fd;
+    }
+
+    .site-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 1.5rem 0 2rem;
+      color: var(--muted);
+      background: rgba(8, 16, 28, 0.45);
+    }
+
+    .footer-inner {
+      width: min(var(--max-width), calc(100% - 2rem));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .two-col,
+      .focus-grid,
+      .visual-grid,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        min-height: auto;
+        padding: 0.9rem 0;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero-card,
+      .section-card,
+      .visual-card,
+      .hero-side,
+      .focus-card {
+        padding: 1.2rem;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 10vw, 2.8rem);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/">John Tyler Swarm</a>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="/">Home</a>
+        <a href="/resume.html">Resume</a>
+        <a href="/blog.html">Blog</a>
+        <a href="/projects.html" class="active" aria-current="page">Projects</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="hero" aria-labelledby="selfhost-title">
+        <div class="hero-card">
+          <div class="eyebrow">Project Detail</div>
+          <h1 id="selfhost-title">Self-Hosted Infrastructure</h1>
+          <p>
+            Designed and operate a self-hosted environment that powers my portfolio project and
+            supporting services. What began as a website evolved into a broader infrastructure
+            exercise focused on deployment, routing, visibility, and operational thinking.
+          </p>
+          <a class="back-link" href="/projects.html">← Back to projects</a>
+        </div>
+
+        <aside class="hero-card hero-side" aria-label="Project summary">
+          <div class="stat">
+            <strong>Core Focus</strong>
+            <span>Docker, routing, backend visibility, and monitoring integration</span>
+          </div>
+          <div class="stat">
+            <strong>Why It Matters</strong>
+            <span>Shows systems thinking instead of a frontend-only portfolio build</span>
+          </div>
+          <div class="stat">
+            <strong>Strongest Signal</strong>
+            <span>Real infrastructure work connected directly to the public-facing application</span>
+          </div>
+        </aside>
+      </section>
+
+      <div class="layout">
+        <section class="section-card">
+          <h2>Overview</h2>
+          <p>
+            This project started as a way to host my own portfolio, but it expanded into a practical
+            self-hosted system that ties together frontend presentation, backend services, monitoring,
+            and service routing.
+          </p>
+          <p>
+            Instead of treating the site as a static frontend, I built it as the visible layer of a
+            larger environment. That environment includes containerized services, reverse proxying,
+            health reporting, and observability components that make the system easier to understand
+            and operate.
+          </p>
+        </section>
+
+        <section class="section-card">
+          <h2>What I Built</h2>
+          <div class="two-col">
+            <div>
+              <h3>Containerized Service Environment</h3>
+              <p>
+                I used Docker to run and isolate the services behind the project, giving the site a
+                more realistic deployment model than a single local app.
+              </p>
+            </div>
+            <div>
+              <h3>Reverse Proxy and Traffic Routing</h3>
+              <p>
+                Nginx handles routing between the frontend and backend, creating a cleaner access
+                layer and a more organized service boundary.
+              </p>
+            </div>
+            <div>
+              <h3>API-Driven System Visibility</h3>
+              <p>
+                The backend exposes health and metrics endpoints so the frontend can present live
+                status information instead of static placeholders.
+              </p>
+            </div>
+            <div>
+              <h3>Monitoring and Operational Visibility</h3>
+              <p>
+                Monitoring tools provide uptime and health context, helping turn the portfolio into
+                something closer to a live system dashboard.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <h2>Why This Project Matters</h2>
+          <p>
+            This project demonstrates more than site design. It shows how I think about systems as
+            connected parts: how services are deployed, how traffic moves between them, how health is
+            measured, and how infrastructure decisions affect the user-facing experience.
+          </p>
+          <p>
+            It also reflects the direction I want to keep growing in: backend development, systems
+            engineering, self-hosting, and observability.
+          </p>
+        </section>
+
+        <section class="section-card">
+          <h2>Architecture</h2>
+          <p>
+            User requests are served through Nginx, which routes traffic to the frontend and backend
+            services. The backend gathers health and system information, exposes it through API
+            endpoints, and the frontend renders that data into status indicators and project views.
+            Monitoring tools collect metrics in parallel to provide deeper visibility into uptime and
+            service behavior.
+          </p>
+
+          <div class="visual-grid">
+            <div class="visual-card">
+              <div>
+                <strong>Draw.io Network / Service Diagram</strong>
+                <p>Place your architecture diagram here once it is exported.</p>
+              </div>
+            </div>
+            <div class="visual-card">
+              <div>
+                <strong>Grafana Screenshot</strong>
+                <p>Place a dashboard screenshot here to show real monitoring context.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <h2>System Flow</h2>
+          <div class="flow">
+            <div class="flow-step">
+              <strong>1. User Request</strong>
+              <span>A visitor requests a page or system data.</span>
+            </div>
+            <div class="flow-step">
+              <strong>2. Nginx Routing</strong>
+              <span>Traffic is routed to the correct frontend or backend target.</span>
+            </div>
+            <div class="flow-step">
+              <strong>3. Backend Processing</strong>
+              <span>Health, uptime, or service information is gathered and returned.</span>
+            </div>
+            <div class="flow-step">
+              <strong>4. Monitoring Context</strong>
+              <span>Metrics are collected to provide visibility beyond a simple up/down result.</span>
+            </div>
+            <div class="flow-step">
+              <strong>5. Frontend Display</strong>
+              <span>The site renders operational information in a clearer user-facing format.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <h2>Technical Focus Areas</h2>
+          <div class="focus-grid">
+            <div class="focus-card">
+              <h3>Infrastructure</h3>
+              <p>Docker, service organization, container-based deployment, and exposure control.</p>
+            </div>
+            <div class="focus-card">
+              <h3>Backend</h3>
+              <p>Health endpoints, metrics exposure, JSON responses, and status logic.</p>
+            </div>
+            <div class="focus-card">
+              <h3>Monitoring</h3>
+              <p>Grafana, Prometheus, uptime visibility, and observability-minded design.</p>
+            </div>
+            <div class="focus-card">
+              <h3>Frontend Integration</h3>
+              <p>Rendering live backend data into a portfolio that communicates technical work clearly.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <h2>What I Learned</h2>
+          <p>
+            This project strengthened my understanding of how infrastructure, applications, and
+            monitoring fit together in a practical environment. Working through routing, health
+            checks, service communication, and frontend presentation gave me a better grasp of how
+            production-minded systems are assembled.
+          </p>
+          <p>
+            It also reinforced the importance of making technical systems understandable, not just
+            functional.
+          </p>
+        </section>
+
+        <section class="section-card">
+          <h2>Next Improvements</h2>
+          <ul>
+            <li>Replace placeholders with a real Draw.io system map and Grafana screenshot</li>
+            <li>Expand security hardening around exposed services</li>
+            <li>Add deeper service-specific breakdowns for monitoring and backend work</li>
+            <li>Surface more live operational data directly into the frontend</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>© 2026 John Tyler Swarm</div>
+      <div>Self-hosted infrastructure project detail</div>
+    </div>
+  </footer>
+</body>
+</html>

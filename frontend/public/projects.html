@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects | John Tyler Swarm</title>
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: rgba(17, 26, 43, 0.84);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --text: #e5ecf5;
+      --muted: #9fb0c7;
+      --blue: #60a5fa;
+      --blue-light: #93c5fd;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.16), transparent 35%),
+        radial-gradient(circle at top right, rgba(110, 231, 183, 0.12), transparent 30%),
+        linear-gradient(180deg, #08101c 0%, #0b1220 100%);
+      color: var(--text);
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    /* HEADER (MATCHES YOUR OTHER PAGES) */
+    .site-header {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(14px);
+      background: rgba(8, 16, 28, 0.72);
+      border-bottom: 1px solid rgba(96, 165, 250, 0.28);
+    }
+
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 72px;
+    }
+
+    .brand {
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .nav a {
+      color: #d7e3f4;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.7rem 1.15rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .nav a:hover {
+      color: white;
+      border-color: rgba(96, 165, 250, 0.28);
+      background: rgba(96, 165, 250, 0.08);
+    }
+
+    .nav a.active {
+      color: #7dd3fc;
+      border-color: rgba(37, 99, 235, 0.45);
+      background: rgba(0, 88, 255, 0.12);
+    }
+
+    main {
+      padding: 3rem 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* FIXED: BLUE EYEBROW */
+    .eyebrow {
+      color: #60a5fa;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: 2.5rem;
+    }
+
+    p {
+      color: var(--muted);
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+
+    .project-card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+    }
+
+    .project-card ul {
+      padding-left: 1.2rem;
+    }
+
+    /* FIXED: BLUE LINKS */
+    .card-link {
+      color: #60a5fa;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .card-link:hover {
+      color: #93c5fd;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 1rem 0;
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .hero, .project-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner container">
+    <a class="brand" href="/">John Tyler Swarm</a>
+
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/resume.html">Resume</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/projects.html" class="active">Projects</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <section class="hero">
+      <div class="card">
+        <div class="eyebrow">Project Work</div>
+        <h1>Projects</h1>
+        <p>
+          Real-world systems, infrastructure, and applications I’ve built.
+        </p>
+      </div>
+
+      <div class="card">
+        <p><strong>Focus:</strong> Infrastructure, backend, observability</p>
+        <p><strong>Strongest:</strong> Self-Hosted Infrastructure</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="project-grid">
+
+        <div class="project-card">
+          <h3>Self-Hosted Infrastructure</h3>
+          <p>Docker, routing, and system design.</p>
+          <ul>
+            <li>Multi-service containers</li>
+            <li>Nginx routing</li>
+          </ul>
+          <a class="card-link" href="/projects/selfhost.html">View details →</a>
+        </div>
+
+        <div class="project-card">
+          <h3>Monitoring</h3>
+          <p>System visibility and metrics.</p>
+          <ul>
+            <li>Grafana dashboards</li>
+            <li>Prometheus</li>
+          </ul>
+          <a class="card-link" href="#">Coming soon →</a>
+        </div>
+
+        <div class="project-card">
+          <h3>Backend API</h3>
+          <p>Health and system endpoints.</p>
+          <ul>
+            <li>JSON API</li>
+            <li>Status logic</li>
+          </ul>
+          <a class="card-link" href="#">Coming soon →</a>
+        </div>
+
+        <div class="project-card">
+          <h3>Frontend</h3>
+          <p>UI + system visualization.</p>
+          <ul>
+            <li>Responsive UI</li>
+            <li>Live data</li>
+          </ul>
+          <a class="card-link" href="#">Coming soon →</a>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    © 2026 John Tyler Swarm
+  </div>
+</footer>
+
+</body>
+</html>
